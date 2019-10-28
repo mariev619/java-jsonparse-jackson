@@ -14,23 +14,24 @@ public class Parse {
             // write your code here !
 
             // TODO : get the root from the file JSON_WEATHER_PATH
-            JsonNode root = null;
+            JsonNode root = objectMapper.readTree(new File(JSON_WEATHER_PATH));
+
 
             // TODO : get the value of "name" attribute
-            String cityName = null;
+            String cityName = root.get("name").asText();
 
             // TODO : get the "lat" and "lon" values of the "coord"
-            Double cityLatitude = null;
-            Double cityLongitude = null;
+            JsonNode coordObject = root.get("coord");
+            Double cityLatitude = coordObject.get("lat").asDouble();
+            Double cityLongitude = coordObject.get("lon").asDouble();
 
             // TODO : get the "wind" attribute as an Wind object
-            Wind wind = null;
+            JsonNode wind = root.get("wind");
 
             // TODO : get the "weather" attribute as an array of Weather objects
-            Weather[] weathers = {};
-
-            // Don't touch this !
-            System.out.printf("City name: %s%n", cityName);
+            Weather[] weathers = objectMapper.convertValue(root.get("weather"), Weather[].class);
+                // Don't touch this !
+                System.out.printf("City name: %s%n", cityName);
             System.out.printf("City latitude: %s%n", cityLatitude);
             System.out.printf("City longitude: %s%n", cityLongitude);
             System.out.printf("Wind infos: %s%n", wind.toString());
@@ -47,8 +48,9 @@ public class Parse {
                 Weather infos: src.main.Weather{id=300, main='Drizzle', description='light intensity drizzle', icon='09d'}
                 Weather infos: src.main.Weather{id=800, main='Clear', description='clear sky', icon='01n'}
             */
-        } catch (IOException e) {
+        } catch (IOException e){
             e.printStackTrace();
         }
     }
 }
+
